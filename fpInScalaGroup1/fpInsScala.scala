@@ -24,39 +24,6 @@ object chapter3 extends App {
 
   val dropWhileForThisList = dropWhile( List(33345,4,5,3)) _
 
-  println(dropWhileForThisList( _  > 4))
-
-  println(tail(List(1,2, 3)))
-  println(tail(List()))
-
-  println(drop(List(), 2))
-  println(drop(List(1,2, 3), 2))
-  println(drop(List(1,2, 3), 4))
-
-
-  println(dropWhile(List(1,2,3,4,5)) ((x: Int) => x < 3))
-
-  def lessThanThree(n : Int) = n < 3
-
-  // Exercise 5
-  def setHead[T](l: List[T], newHead: T) = {
-    newHead :: tail(l)
-  }
-  
-  // Exercise 6  
-  def init[A](l: List[A]) : List[A] = l match {
-      case Nil => Nil
-      case _ :: Nil => Nil
-      case x :: xs => x::init(xs)
-  }                                               //> init: [A](l: List[A])List[A]
-
-  // Exercise 10
-  def length[A](l: List[A]): Int = l.foldRight(0)((_, c) => c + 1)
-
-  val dropWhileForThisList = dropWhile( List(33345,4,5,3)) _
-
-  println(dropWhileForThisList( _  > 4))
-
   println(tail(List(1,2, 3)))
   println(tail(List()))
 
@@ -70,7 +37,6 @@ object chapter3 extends App {
   def lessThanThree(n : Int) = n < 3
   
   // Exercise 11
-  @tailrec
   def foldLeft[A,B] (l: List[A], z: B)(f: (B,A) => B): B = {
     l match {
       case Nil => z
@@ -167,4 +133,44 @@ object chapter3 extends App {
   }
 
   println(addTwoLists(List(1,2,3,4), List(4,5,6)))
+
+  // Exercise 24
+  def zipTwoLists[A](l1: List[A], l2: List[A])( f: (A,A) => A):List[A] = {
+     
+    (l1,l2) match {
+      case (Nil,l2) => l2
+      case (l1,Nil) =>l1
+      case (x::xs,y::ys) => f(x,y)::zipTwoLists(xs,ys)(f)
+    }
+  }
+
+  println(zipTwoLists(List(1,2,3,4), List(4,5,6))( _+_))
+  println(zipTwoLists(List("t","i"), List("i","s"))( _+_))
+
+ 
+  // Exercise 26
+  sealed trait Tree[+A]
+
+  case class Leaf[A] (value: A) extends Tree[A]
+  case class Branch[A] (left: Tree[A], right: Tree[A]) extends Tree[A]
+
+  def size[A](t:Tree[A]): Int = {
+    t match {
+      case Leaf(x) => 1
+      case Branch(r,l) => 1 + size(r) + size(l)
+}
+    }
+
+  val tree = Branch(Leaf(1), Leaf(2))
+  println(size(tree))
+
+  //Exercise 27
+  def max(t: Tree[Int]) : Int = {
+    t match {
+      case Leaf(x) => x
+      case Branch(r,l) => max(r).max(max(l))
+    }
+  }
+  val treeMax = Branch(Branch(Leaf(4),Leaf(1)),Leaf(2))
+  println(max(treeMax))
 }
